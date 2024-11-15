@@ -1,17 +1,12 @@
-import { fromEvent, Observer } from 'rxjs';
+import { Observer, of, range } from 'rxjs';
 
-const observer: Observer<Event> = {
+const observer: Observer<number> = {
   next: (value) => console.log('next', value),
   error: (error) => console.log('error', error),
   complete: () => console.log('complete'),
 };
 
-const source$ = fromEvent(document, 'click');
+// const source$ = of(1, 2, 3, 4, 5);
+const source$ = range(1, 5);
 
-const subOne = source$.subscribe(observer);
-const subTwo = source$.subscribe(observer);
-
-setTimeout(() => {
-  console.log('unsubscribe');
-  subOne.unsubscribe();
-}, 3000);
+source$.subscribe(observer);
