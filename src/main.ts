@@ -11,7 +11,6 @@ const observable = new Observable<number>((subscriber) => {
 
   const id = setInterval(() => {
     subscriber.next(count);
-    subscriber.complete(); // complete after first value
     count++;
   }, 1000);
 
@@ -22,6 +21,9 @@ const observable = new Observable<number>((subscriber) => {
   };
 });
 
-console.log('begin');
-observable.subscribe(observer);
-console.log('end');
+const subscription = observable.subscribe(observer);
+const subscriptionTwo = observable.subscribe(observer);
+
+setTimeout(() => {
+  subscription.unsubscribe();
+}, 3500);
