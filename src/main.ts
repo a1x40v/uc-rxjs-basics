@@ -1,15 +1,17 @@
-import { filter, fromEvent, map } from 'rxjs';
+import { from, interval, reduce, take } from 'rxjs';
 
-// of(1, 2, 3, 4, 5)
-//   .pipe(filter((val) => val > 2))
-//   .subscribe(console.log);
+function totalReducer(acc: number, curr: number): number {
+  console.log({ acc, curr });
+  return acc + curr;
+}
 
-const keyup$ = fromEvent(document, 'keyup');
+// from([1, 2, 3, 4, 5])
+// .pipe(reduce(totalReducer))
+// .subscribe(console.log);
 
-const keycode$ = keyup$.pipe(map((event) => (event as KeyboardEvent).code));
-
-keycode$.subscribe(console.log);
-
-const enter$ = keycode$.pipe(filter((code) => code === 'Enter'));
-
-enter$.subscribe(console.log);
+interval(1000)
+  .pipe(take(3), reduce(totalReducer))
+  .subscribe({
+    next: console.log,
+    complete: () => console.log('Completed'),
+  });
