@@ -1,18 +1,15 @@
-import { fromEvent, map, mapTo, of, pluck } from 'rxjs';
+import { filter, fromEvent, map } from 'rxjs';
 
-/*  with of */
 // of(1, 2, 3, 4, 5)
-//   .pipe(map((value) => value * 10))
+//   .pipe(filter((val) => val > 2))
 //   .subscribe(console.log);
 
-/* with fromEvent */
 const keyup$ = fromEvent(document, 'keyup');
-const keycode$ = keyup$.pipe(map((event) => (event as KeyboardEvent).key));
 
-/* pluck */
-const keycodeWithPluck$ = keyup$.pipe(pluck('key'));
+const keycode$ = keyup$.pipe(map((event) => (event as KeyboardEvent).code));
 
-/* mapTo */
-const pressed$ = keyup$.pipe(mapTo('Key pressed!'));
+keycode$.subscribe(console.log);
 
-pressed$.subscribe(console.log);
+const enter$ = keycode$.pipe(filter((code) => code === 'Enter'));
+
+enter$.subscribe(console.log);
