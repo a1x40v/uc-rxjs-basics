@@ -1,12 +1,28 @@
-import { Observer, of, range } from 'rxjs';
+import { Observer, from } from 'rxjs';
 
-const observer: Observer<number> = {
+const observer: Observer<any> = {
   next: (value) => console.log('next', value),
   error: (error) => console.log('error', error),
   complete: () => console.log('complete'),
 };
 
-// const source$ = of(1, 2, 3, 4, 5);
-const source$ = range(1, 5);
+/* array items */
+// const source$ = from([1, 2, 3, 4, 5]);
+
+/* string chars */
+// const source$ = from('Hello');
+
+/* promise */
+// const source$ = from(fetch('https://api.github.com/users/octocat'));
+
+/* iterator */
+function* hello() {
+  yield 'Hello';
+  yield 'World!';
+}
+
+const iterator = hello();
+
+const source$ = from(iterator);
 
 source$.subscribe(observer);
