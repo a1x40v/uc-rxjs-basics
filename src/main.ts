@@ -1,12 +1,18 @@
-import { Observer, interval, timer } from 'rxjs';
+import { fromEvent, map, mapTo, of, pluck } from 'rxjs';
 
-const observer: Observer<any> = {
-  next: (value) => console.log('next', value),
-  error: (error) => console.log('error', error),
-  complete: () => console.log('complete'),
-};
+/*  with of */
+// of(1, 2, 3, 4, 5)
+//   .pipe(map((value) => value * 10))
+//   .subscribe(console.log);
 
-// const timer$ = interval(1000);
-const timer$ = timer(0, 1000);
+/* with fromEvent */
+const keyup$ = fromEvent(document, 'keyup');
+const keycode$ = keyup$.pipe(map((event) => (event as KeyboardEvent).key));
 
-timer$.subscribe(console.log);
+/* pluck */
+const keycodeWithPluck$ = keyup$.pipe(pluck('key'));
+
+/* mapTo */
+const pressed$ = keyup$.pipe(mapTo('Key pressed!'));
+
+pressed$.subscribe(console.log);
