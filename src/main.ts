@@ -1,12 +1,26 @@
-import { fromEvent, interval, takeUntil } from 'rxjs';
-import { lab02 } from './labs/lab02';
+import {
+  distinctUntilChanged,
+  distinctUntilKeyChanged,
+  from,
+  map,
+  of,
+} from 'rxjs';
 
-const counter$ = interval(1000);
-const click$ = fromEvent(document, 'click');
+/*  example 1 */
+// const numbers$ = of(1, 1, 2, 3, 3, 3, 4, 5);
+// numbers$.pipe(distinctUntilChanged()).subscribe(console.log);
 
-counter$.pipe(takeUntil(click$)).subscribe({
-  next: console.log,
-  complete: () => console.log('complete'),
-});
+/* example 2*/
+const people = [
+  { name: 'Alex', isLoggedIn: false },
+  { name: 'Alex', isLoggedIn: true },
+  { name: 'Alex', isLoggedIn: true },
+];
 
-// lab02();
+const state$ = from(people)
+  .pipe(
+    // distinctUntilChanged((curr, prev) => curr.name === prev.name),
+    distinctUntilKeyChanged('name'),
+    map(({ name }) => name)
+  )
+  .subscribe(console.log);
