@@ -1,19 +1,21 @@
-import { interval, mapTo, scan, takeWhile, tap } from 'rxjs';
+import { fromEvent, interval, mapTo, scan, takeUntil, tap } from 'rxjs';
 
 export function lab02() {
   // elem refs
   const countdown = document.getElementById('countdown')!;
   const message = document.getElementById('message')!;
+  const abortButton = document.getElementById('abort')!;
 
   // streams
   const counter$ = interval(1000);
+  const abortClick$ = fromEvent(abortButton, 'click');
 
   counter$
     .pipe(
       mapTo(-1),
       scan((acc, curr) => acc + curr, 10),
       tap(console.log),
-      takeWhile((val) => val >= 0)
+      takeUntil(abortClick$)
     )
     .subscribe((val) => {
       countdown.innerHTML = `${val}`;
