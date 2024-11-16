@@ -1,24 +1,18 @@
-import {
-  debounce,
-  debounceTime,
-  distinctUntilChanged,
-  fromEvent,
-  interval,
-  pluck,
-} from 'rxjs';
+import { debounceTime, fromEvent, mergeMap } from 'rxjs';
+import { ajax } from 'rxjs/ajax';
 
 // elements
 const inputBox = document.getElementById('text-input')!;
 
 // streams
-const click$ = fromEvent(document, 'click');
 const input$ = fromEvent(inputBox, 'keyup');
 
 input$
   .pipe(
-    // debounce(() => interval(1000)),
     debounceTime(1000),
-    pluck('target', 'value'),
-    distinctUntilChanged()
+    mergeMap((event) => {
+      const term = (event.target as HTMLInputElement).value;
+      return ajax.getJSON(`https://api.github.com/users/${term}`);
+    })
   )
   .subscribe(console.log);
