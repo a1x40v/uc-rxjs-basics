@@ -1,7 +1,3 @@
-import { from, scan } from 'rxjs';
+import { lab02 } from './labs/lab02';
 
-const numbers = [1, 2, 3, 4, 5];
-
-from(numbers)
-  .pipe(scan((acc, curr) => acc + curr))
-  .subscribe(console.log);
+lab02();
