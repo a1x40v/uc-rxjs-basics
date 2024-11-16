@@ -1,4 +1,5 @@
-import { first, fromEvent, map, of, take } from 'rxjs';
+import { fromEvent, map, takeWhile } from 'rxjs';
+import { lab02 } from './labs/lab02';
 
 const click$ = fromEvent<PointerEvent>(document, 'click');
 
@@ -8,10 +9,12 @@ click$
       x: event.clientX,
       y: event.clientY,
     })),
-    // take(1)
-    first(({ y }) => y > 200)
+    // true if we want to emit the final value
+    takeWhile(({ y }) => y <= 200, true)
   )
   .subscribe({
     next: console.log,
     complete: () => console.log('complete'),
   });
+
+// lab02();

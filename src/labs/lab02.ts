@@ -1,4 +1,4 @@
-import { filter, interval, mapTo, scan } from 'rxjs';
+import { interval, mapTo, scan, takeWhile, tap } from 'rxjs';
 
 export function lab02() {
   // elem refs
@@ -12,7 +12,8 @@ export function lab02() {
     .pipe(
       mapTo(-1),
       scan((acc, curr) => acc + curr, 10),
-      filter((val) => val >= 0)
+      tap(console.log),
+      takeWhile((val) => val >= 0)
     )
     .subscribe((val) => {
       countdown.innerHTML = `${val}`;
