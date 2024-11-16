@@ -1,29 +1,29 @@
-import { fromEvent, interval, map, mergeMap, takeUntil } from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  fromEvent,
+  map,
+  switchMap,
+} from 'rxjs';
 import { ajax } from 'rxjs/ajax';
 
-const click$ = fromEvent<MouseEvent>(document, 'click');
-const mousedown$ = fromEvent(document, 'mousedown');
-const mouseup$ = fromEvent(document, 'mouseup');
+/* example 1 */
+// const click$ = fromEvent<MouseEvent>(document, 'click');
+// const interval$ = interval(1000);
 
-const interval$ = interval(1000);
+// click$.pipe(switchMap(() => interval$)).subscribe(console.log);
 
-// mousedown$
-//   .pipe(mergeMap(() => interval$.pipe(takeUntil(mouseup$))))
-//   .subscribe(console.log);
+/* example 2 */
 
-const coordinates$ = click$.pipe(
-  map((event) => ({ x: event.clientX, y: event.clientY }))
-);
+const BASE_URL = 'https://api.openbrewerydb.org/v1/breweries/search';
 
-const coordinatesWithSave$ = coordinates$.pipe(
-  mergeMap((coords) =>
-    ajax.post(
-      `https://run.mocky.io/v3/73f5e08e-d6ba-4fd7-a5de-1c5e4d89b329`,
-      coords
-    )
+const inputBox = document.getElementById('text-input')!;
+
+fromEvent<KeyboardEvent>(inputBox, 'keyup')
+  .pipe(
+    debounceTime(500),
+    map((event) => (event.target as HTMLInputElement).value),
+    distinctUntilChanged(),
+    switchMap((term) => ajax.getJSON(`${BASE_URL}?query=${term}`))
   )
-);
-
-coordinatesWithSave$.subscribe((response) => {
-  console.log('Coordinates saved:', response);
-});
+  .subscribe(console.log);
